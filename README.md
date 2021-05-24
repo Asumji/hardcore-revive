@@ -7,6 +7,7 @@ How to Install
 5. Start/Restart your server.
 
 Commands:
+
 /revive - revives a player with a set item price.
 
 /reviveprice - sets the price for reviving a player to the ItemStack in your hand.
