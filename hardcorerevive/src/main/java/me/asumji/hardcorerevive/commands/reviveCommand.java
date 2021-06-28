@@ -80,6 +80,13 @@ public class reviveCommand implements CommandExecutor {
                             if (target.getGameMode() == GameMode.SPECTATOR) {
                                 if (containsAtLeast(player, item, amount)) {
                                     target.setGameMode(GameMode.SURVIVAL);
+                                    List<World> worlds = (List<World>) this.main.getServer().getWorlds();
+
+                                    String world = worlds.get(0).getName();
+
+                                    Location location = this.main.getServer().getWorld(world).getSpawnLocation();
+                                    target.teleport(location);
+                                    
                                     removeItems(inv, item, amount);
                                     player.sendMessage(ChatColor.GREEN + "You've revived " + args[0]);
                                     target.sendMessage(ChatColor.GREEN + "You've been revived by " + player.getDisplayName());
