@@ -1,7 +1,7 @@
 How to Install
 
 1. Switch to jar branch.
-2. Download jar file.
+2. Download jar file. (Latest version to have the best experience)
 3. Open your server's plugins folder.
 4. Drag the jar into that folder.
 5. Start/Restart your server.
