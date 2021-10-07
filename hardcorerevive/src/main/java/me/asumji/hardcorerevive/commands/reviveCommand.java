@@ -1,10 +1,7 @@
 package me.asumji.hardcorerevive.commands;
 
 import me.asumji.hardcorerevive.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class reviveCommand implements CommandExecutor {
@@ -67,52 +65,57 @@ public class reviveCommand implements CommandExecutor {
         Material item = this.main.getConfig().getItemStack("revive.price").getType();
 
         if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if(args.length > 0) {
-                if (player.getGameMode() == GameMode.SPECTATOR) {
-                    player.sendMessage(ChatColor.RED + "You can't revive people when you're dead.");
-                    return true;
-                } else {
-                    Player target = Bukkit.getPlayerExact(args[0]);
-                    Inventory inv = player.getInventory();
-                    if (target instanceof Player) {
-                        if (target != player) {
-                            if (target.getGameMode() == GameMode.SPECTATOR) {
-                                if (containsAtLeast(player, item, amount)) {
-                                    target.setGameMode(GameMode.SURVIVAL);
-                                    List<World> worlds = (List<World>) this.main.getServer().getWorlds();
+            if (main.getConfig().get("revive.method") == "command") {
+                Player player = (Player) sender;
+                if (args.length > 0) {
+                    if (player.getGameMode() == GameMode.SPECTATOR) {
+                        player.sendMessage(ChatColor.RED + "You can't revive people when you're dead.");
+                        return true;
+                    } else {
+                        Player target = Bukkit.getPlayerExact(args[0]);
+                        Inventory inv = player.getInventory();
+                        if (target instanceof Player) {
+                            if (target != player) {
+                                if (target.getGameMode() == GameMode.SPECTATOR) {
+                                    if (containsAtLeast(player, item, amount)) {
+                                        target.setGameMode(GameMode.SURVIVAL);
+                                        List<World> worlds = this.main.getServer().getWorlds();
 
-                                    String world = worlds.get(0).getName();
+                                        String world = worlds.get(0).getName();
 
-                                    Location location = this.main.getServer().getWorld(world).getSpawnLocation();
-                                    target.teleport(location);
-                                    
-                                    removeItems(inv, item, amount);
-                                    player.sendMessage(ChatColor.GREEN + "You've revived " + args[0]);
-                                    target.sendMessage(ChatColor.GREEN + "You've been revived by " + player.getDisplayName());
-                                    return true;
+                                        Location location = this.main.getServer().getWorld(world).getSpawnLocation();
+                                        target.teleport(location);
+
+                                        removeItems(inv, item, amount);
+                                        player.sendMessage(ChatColor.GREEN + "You've revived " + args[0]);
+                                        target.sendMessage(ChatColor.GREEN + "You've been revived by " + player.getDisplayName());
+                                        return true;
+                                    } else {
+                                        String item1 = String.valueOf(item);
+                                        item1 = item1.replace("_", " ");
+                                        item1 = item1.toLowerCase();
+                                        player.sendMessage(ChatColor.RED + "You need at least " + amount + " " + item1 + " to revive someone!");
+                                        return true;
+                                    }
                                 } else {
-                                    String item1 = String.valueOf(item);
-                                    item1 = item1.replace("_", " ");
-                                    item1 = item1.toLowerCase();
-                                    player.sendMessage(ChatColor.RED + "You need at least " + amount +  " " + item1 + " to revive someone!");
+                                    player.sendMessage(ChatColor.RED + "This player isn't dead.");
                                     return true;
                                 }
                             } else {
-                                player.sendMessage(ChatColor.RED + "This player isn't dead.");
+                                player.sendMessage(ChatColor.RED + "You can't revive yourself.");
                                 return true;
                             }
                         } else {
-                            player.sendMessage(ChatColor.RED + "You can't revive yourself.");
+                            player.sendMessage(ChatColor.RED + "Couldn't find the player " + args[0]);
                             return true;
                         }
-                    } else {
-                        player.sendMessage(ChatColor.RED + "Couldn't find the player " + args[0]);
-                        return true;
                     }
+                } else {
+                    player.sendMessage(ChatColor.RED + "/revive player");
+                    return true;
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "/revive player");
+                sender.sendMessage(ChatColor.RED + "Only the ritual is currently available.");
                 return true;
             }
         } else {
