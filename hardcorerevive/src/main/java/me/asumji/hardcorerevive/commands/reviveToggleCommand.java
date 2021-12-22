@@ -17,9 +17,11 @@ public class reviveToggleCommand implements CommandExecutor {
             String method = (String) main.getConfig().get("revive.method");
             if (method == "command") {
                 main.getConfig().set("revive.method", "ritual");
+                this.main.saveConfig();
                 sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the ritual.");
             } else {
                 main.getConfig().set("revive.method", "command");
+                this.main.saveConfig();
                 sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the command.");
             }
             return true;
