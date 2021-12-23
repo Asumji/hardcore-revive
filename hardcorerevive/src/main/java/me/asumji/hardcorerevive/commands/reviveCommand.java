@@ -5,7 +5,10 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -37,12 +40,24 @@ public class reviveCommand implements CommandExecutor {
                                 if (target.getGameMode() == GameMode.SPECTATOR) {
                                     if (player.getInventory().containsAtLeast(item, amount)) {
                                         target.setGameMode(GameMode.SURVIVAL);
-                                        List<World> worlds = this.main.getServer().getWorlds();
 
-                                        String world = worlds.get(0).getName();
+                                        if (((String) main.getConfig().get("revive.spawn")).equalsIgnoreCase("spawn")) {
+                                            String world = player.getLocation().getWorld().getName();
 
-                                        Location location = this.main.getServer().getWorld(world).getSpawnLocation();
-                                        target.teleport(location);
+                                            Location location = this.main.getServer().getWorld(world).getSpawnLocation();
+                                            target.teleport(location);
+                                        } else if (((String) main.getConfig().get("revive.spawn")).equalsIgnoreCase("death")) {
+                                            ConfigurationSection section = main.getConfig().getConfigurationSection(target.getUniqueId().toString());
+                                            if (section.getString("cause").equalsIgnoreCase("nonReviviable")) {
+                                                main.getLogger().info("died in lava/void");
+                                                String world = player.getLocation().getWorld().getName();
+
+                                                Location location = this.main.getServer().getWorld(world).getSpawnLocation();
+                                                target.teleport(location);
+                                            } else {
+                                                target.teleport(new Location(player.getLocation().getWorld(), section.getDouble("location.x"), section.getDouble("location.y"), section.getDouble("location.z")));
+                                            }
+                                        }
 
                                         player.getInventory().removeItem(new ItemStack(item.getType(),amount));
                                         player.sendMessage(ChatColor.GREEN + "You've revived " + args[0]);
