@@ -1,6 +1,4 @@
 package me.asumji.hardcorerevive.commands;
-
-import me.asumji.hardcorerevive.Files.DataManager;
 import me.asumji.hardcorerevive.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,15 +13,34 @@ public class reviveToggleCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.isOp()) {
             String method = (String) main.getConfig().get("revive.method");
-            if (method == "command") {
-                main.getConfig().set("revive.method", "ritual");
-                this.main.saveConfig();
-                sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the ritual.");
-            } else {
-                main.getConfig().set("revive.method", "command");
-                this.main.saveConfig();
-                sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the command.");
+            String spawn = (String) main.getConfig().get("revive.spawn");
+            if (args.length > 0) {
+                if (args[0].equalsIgnoreCase("method")) {
+                    if (method == "command") {
+                        main.getConfig().set("revive.method", "ritual");
+                        this.main.saveConfig();
+                        sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the ritual.");
+                    } else {
+                        main.getConfig().set("revive.method", "command");
+                        this.main.saveConfig();
+                        sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the command.");
+                    }
+                    return true;
+                } else if (args[0].equalsIgnoreCase("spawn")) {
+                    if (spawn == "spawn") {
+                        main.getConfig().set("revive.spawn", "death");
+                        this.main.saveConfig();
+                        sender.sendMessage(ChatColor.GREEN + "Revived people will now spawn at their death spot.");
+                    } else {
+                        main.getConfig().set("revive.spawn", "spawn");
+                        this.main.saveConfig();
+                        sender.sendMessage(ChatColor.GREEN + "Revived people will now spawn at world spawn.");
+                    }
+                    return true;
+                }
+                return true;
             }
+            sender.sendMessage(ChatColor.RED + "/revivetoggle method/spawn");
             return true;
         } else {
             sender.sendMessage(ChatColor.RED + "You have to be an operator to execute this command.");
