@@ -1,0 +1,24 @@
+name: HardcoreRevive
+version: 1.3.2
+main: me.asumji.hardcorerevive.Main
+description: A plugin that lets players get revived in hardcore mode.
+author: asumji
+api-version: 1.16
+
+commands:
+  revive:
+    description: "Revive a player."
+    usage: "/revive <ign>"
+    aliases: [rev]
+  revivePrice:
+    description: "Set the price of a revival to the item in your hand."
+    usage: "/reviveprice"
+    aliases: [revp, revivep, revprice]
+  revivetoggle:
+    description: "Toggle between different things."
+    usage: "/revivetoggle method/spawn"
+    aliases: [revt, revivet, revtoggle]
+  ritualprice:
+    description: "Set the price of the ritual to the item in your hand."
+    usage: "/ritualprice"
+    aliases: [ritp, ritualp, ritprice]
