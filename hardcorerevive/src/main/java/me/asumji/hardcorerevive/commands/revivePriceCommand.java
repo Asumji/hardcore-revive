@@ -1,6 +1,5 @@
 package me.asumji.hardcorerevive.commands;
 
-import me.asumji.hardcorerevive.Files.DataManager;
 import me.asumji.hardcorerevive.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,7 +12,6 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class revivePriceCommand implements CommandExecutor {
     private final Main main;
-    public DataManager data;
     public revivePriceCommand(Main main) { this.main = main; }
 
     @Override
@@ -23,7 +21,6 @@ public class revivePriceCommand implements CommandExecutor {
             if (player.isOp()) {
                 Inventory inv = player.getInventory();
                 ItemStack slot = ((PlayerInventory) inv).getItemInMainHand();
-                main.getLogger().info("Amount: " + slot.getAmount() + " Item: " + slot.getType());
                 this.main.getConfig().set("revive.price", slot);
                 this.main.saveConfig();
 
@@ -40,7 +37,7 @@ public class revivePriceCommand implements CommandExecutor {
                 return true;
             }
         } else {
-            main.getLogger().info("You have to be a player to hold items.");
+            this.main.getLogger().info("You have to be a player to hold items.");
             return true;
         }
     }

@@ -7,12 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
-
 public class reviveCommand implements CommandExecutor {
     private final  Main main;
 
@@ -27,7 +22,7 @@ public class reviveCommand implements CommandExecutor {
         ItemStack item = this.main.getConfig().getItemStack("revive.price");
 
         if (sender instanceof Player) {
-            if (((String) main.getConfig().get("revive.method")).equalsIgnoreCase("command")) {
+            if (((String) this.main.getConfig().get("revive.method")).equalsIgnoreCase("command")) {
                 Player player = (Player) sender;
                 if (args.length > 0) {
                     if (player.getGameMode() == GameMode.SPECTATOR) {

@@ -12,27 +12,27 @@ public class reviveToggleCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.isOp()) {
-            String method = (String) main.getConfig().get("revive.method");
-            String spawn = (String) main.getConfig().get("revive.spawn");
+            String method = (String) this.main.getConfig().get("revive.method");
+            String spawn = (String) this.main.getConfig().get("revive.spawn");
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("method")) {
                     if (method == "command") {
-                        main.getConfig().set("revive.method", "ritual");
+                        this.main.getConfig().set("revive.method", "ritual");
                         this.main.saveConfig();
                         sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the ritual.");
                     } else {
-                        main.getConfig().set("revive.method", "command");
+                        this.main.getConfig().set("revive.method", "command");
                         this.main.saveConfig();
                         sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the command.");
                     }
                     return true;
                 } else if (args[0].equalsIgnoreCase("spawn")) {
                     if (spawn == "spawn") {
-                        main.getConfig().set("revive.spawn", "death");
+                        this.main.getConfig().set("revive.spawn", "death");
                         this.main.saveConfig();
                         sender.sendMessage(ChatColor.GREEN + "Revived people will now spawn at their death spot.");
                     } else {
-                        main.getConfig().set("revive.spawn", "spawn");
+                        this.main.getConfig().set("revive.spawn", "spawn");
                         this.main.saveConfig();
                         sender.sendMessage(ChatColor.GREEN + "Revived people will now spawn at world spawn.");
                     }
