@@ -8,6 +8,10 @@ How to Install
 
 Commands:
 
-/revive - revives a player with a set item price.
+/revive <ign> - revives a player with a set item price.
 
 /reviveprice - sets the price for reviving a player to the ItemStack in your hand.
+
+/revivetoggle method/spawn - toggles between how to revive and where to revive
+
+/ritualprice - sets the price for reviving a player to the item in your hand.
