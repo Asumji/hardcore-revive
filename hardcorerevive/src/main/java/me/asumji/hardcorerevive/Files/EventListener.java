@@ -15,12 +15,23 @@ import me.asumji.hardcorerevive.Main;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.function.Supplier;
+
 public class EventListener implements Listener
 {
     private final Main main;
 
     public EventListener(final Main main) {
         this.main = main;
+    }
+
+    public boolean playerDead(String player) {
+        if (this.main.getServer().getPlayer(player) != null) {
+            if (this.main.getServer().getPlayer(player).getGameMode() == GameMode.SPECTATOR) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @EventHandler
@@ -31,8 +42,32 @@ public class EventListener implements Listener
             if (this.main.getConfig().get("revive.method") == "ritual" && droppedItem.getItemStack().getType().toString().equalsIgnoreCase(item.getType().toString())) {
                 e.getEntity().remove();
                 if (e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
-                    for (final Player p : Bukkit.getOnlinePlayers()) {
-                        if (p.getGameMode() == GameMode.SPECTATOR) {
+                    if (!this.main.getConfig().getBoolean("revive.ritual.ritualname")) {
+                        for (final Player p : Bukkit.getOnlinePlayers()) {
+                            if (p.getGameMode() == GameMode.SPECTATOR) {
+                                if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("spawn")) {
+                                    final String world = p.getLocation().getWorld().getName();
+                                    final Location location = this.main.getServer().getWorld(world).getSpawnLocation();
+                                    p.teleport(location);
+                                } else if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("death")) {
+                                    final ConfigurationSection section = this.main.getConfig().getConfigurationSection(p.getUniqueId().toString());
+                                    if (section.getString("cause").equalsIgnoreCase("nonReviviable")) {
+                                        final String world2 = p.getLocation().getWorld().getName();
+                                        final Location location2 = this.main.getServer().getWorld(world2).getSpawnLocation();
+                                        p.teleport(location2);
+                                    } else {
+                                        p.teleport(new Location(p.getLocation().getWorld(), section.getDouble("location.x"), section.getDouble("location.y"), section.getDouble("location.z")));
+                                    }
+                                }
+                                p.setGameMode(GameMode.SURVIVAL);
+                                p.sendMessage(ChatColor.GREEN + "You've been revived!");
+                                Bukkit.getServer().broadcastMessage(ChatColor.GREEN + p.getName() + " has been revived through a ritual!");
+                                break;
+                            }
+                        }
+                    } else {
+                        if (playerDead(droppedItem.getItemStack().getItemMeta().getDisplayName())) {
+                            Player p = this.main.getServer().getPlayer(droppedItem.getItemStack().getItemMeta().getDisplayName());
                             if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("spawn")) {
                                 final String world = p.getLocation().getWorld().getName();
                                 final Location location = this.main.getServer().getWorld(world).getSpawnLocation();
@@ -50,7 +85,6 @@ public class EventListener implements Listener
                             p.setGameMode(GameMode.SURVIVAL);
                             p.sendMessage(ChatColor.GREEN + "You've been revived!");
                             Bukkit.getServer().broadcastMessage(ChatColor.GREEN + p.getName() + " has been revived through a ritual!");
-                            break;
                         }
                     }
                 }

@@ -14,6 +14,7 @@ public class reviveToggleCommand implements CommandExecutor {
         if (sender.isOp()) {
             String method = (String) this.main.getConfig().get("revive.method");
             String spawn = (String) this.main.getConfig().get("revive.spawn");
+            Boolean ritualname = (Boolean) this.main.getConfig().get("revive.ritual.ritualname");
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("method")) {
                     if (method == "command") {
@@ -37,10 +38,20 @@ public class reviveToggleCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.GREEN + "Revived people will now spawn at world spawn.");
                     }
                     return true;
+                } else if (args[0].equalsIgnoreCase("ritualname")) {
+                    if (ritualname) {
+                        this.main.getConfig().set("revive.ritual.ritualname", false);
+                        this.main.saveConfig();
+                        sender.sendMessage(ChatColor.GREEN + "The Ritual will no longer require items named after a dead player to work.");
+                    } else {
+                        this.main.getConfig().set("revive.ritual.ritualname", true);
+                        this.main.saveConfig();
+                        sender.sendMessage(ChatColor.GREEN + "The Ritual will now require items named after a dead player to work.");
+                    }
                 }
                 return true;
             }
-            sender.sendMessage(ChatColor.RED + "/revivetoggle method/spawn");
+            sender.sendMessage(ChatColor.RED + "/revivetoggle method/spawn/ritualname");
             return true;
         } else {
             sender.sendMessage(ChatColor.RED + "You have to be an operator to execute this command.");

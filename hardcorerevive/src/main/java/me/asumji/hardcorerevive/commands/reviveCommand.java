@@ -14,6 +14,22 @@ public class reviveCommand implements CommandExecutor {
     public reviveCommand(Main main) {
         this.main = main;
     }
+
+    public String getItemName(ItemStack item) {
+        if (!item.getType().equals((Object)Material.AIR)) {
+            if (item.getItemMeta().getDisplayName() != "") {
+                return item.getItemMeta().getDisplayName();
+            } else {
+                String item1 = item.getType().toString();
+                item1 = item1.replace("_", " ");
+                item1 = item1.toLowerCase();
+                return item1;
+            }
+        } else {
+            return "air";
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -44,7 +60,6 @@ public class reviveCommand implements CommandExecutor {
                                         } else if (((String) main.getConfig().get("revive.spawn")).equalsIgnoreCase("death")) {
                                             ConfigurationSection section = main.getConfig().getConfigurationSection(target.getUniqueId().toString());
                                             if (section.getString("cause").equalsIgnoreCase("nonReviviable")) {
-                                                main.getLogger().info("died in lava/void");
                                                 String world = player.getLocation().getWorld().getName();
 
                                                 Location location = this.main.getServer().getWorld(world).getSpawnLocation();
@@ -54,15 +69,12 @@ public class reviveCommand implements CommandExecutor {
                                             }
                                         }
 
-                                        player.getInventory().removeItem(new ItemStack(item.getType(),amount));
+                                        player.getInventory().removeItem(item);
                                         player.sendMessage(ChatColor.GREEN + "You've revived " + args[0]);
                                         target.sendMessage(ChatColor.GREEN + "You've been revived by " + player.getDisplayName());
                                         return true;
                                     } else {
-                                        String item1 = String.valueOf(item.getType());
-                                        item1 = item1.replace("_", " ");
-                                        item1 = item1.toLowerCase();
-                                        player.sendMessage(ChatColor.RED + "You need at least " + amount + " " + item1 + " to revive someone!\nMake sure the item isn't in any extra slot (Off-hand or similar) but in the inventory.");
+                                        player.sendMessage(ChatColor.RED + "You need at least " + amount + " " + getItemName(item) + "§c to revive someone!\nMake sure the item isn't in any extra slot (Off-hand or similar) but in the inventory.");
                                         return true;
                                     }
                                 } else {

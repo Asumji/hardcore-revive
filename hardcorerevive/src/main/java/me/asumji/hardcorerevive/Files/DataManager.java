@@ -23,6 +23,7 @@ public class DataManager
         final String path2 = "revive.method";
         final String path3 = "revive.spawn";
         final String path4 = "revive.ritual.price";
+        final String ritualname = "revive.ritual.ritualname";
         final String spawn = "death";
         final String method = "command";
         final ItemStack price = new ItemStack(Material.TOTEM_OF_UNDYING, 1);
@@ -31,6 +32,7 @@ public class DataManager
         this.plugin.getConfig().addDefault(path2, (Object)method);
         this.plugin.getConfig().addDefault(path, (Object)item);
         this.plugin.getConfig().addDefault(path4, (Object)price);
+        this.plugin.getConfig().addDefault(ritualname, (Object)false);
         this.plugin.getConfig().options().copyDefaults(true);
         this.plugin.saveConfig();
     }
