@@ -32,8 +32,7 @@ public class reviveCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-
+        //main.getLogger().info(main.getConfig().getString("revive.method"));
         int amount = this.main.getConfig().getItemStack("revive.price").getAmount();
         ItemStack item = this.main.getConfig().getItemStack("revive.price");
 

@@ -17,7 +17,7 @@ public class reviveToggleCommand implements CommandExecutor {
             Boolean ritualname = (Boolean) this.main.getConfig().get("revive.ritual.ritualname");
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("method")) {
-                    if (method == "command") {
+                    if (method.equals("command")) {
                         this.main.getConfig().set("revive.method", "ritual");
                         this.main.saveConfig();
                         sender.sendMessage(ChatColor.GREEN + "You can now only revive people with the ritual.");
@@ -28,7 +28,7 @@ public class reviveToggleCommand implements CommandExecutor {
                     }
                     return true;
                 } else if (args[0].equalsIgnoreCase("spawn")) {
-                    if (spawn == "spawn") {
+                    if (spawn.equals("spawn")) {
                         this.main.getConfig().set("revive.spawn", "death");
                         this.main.saveConfig();
                         sender.sendMessage(ChatColor.GREEN + "Revived people will now spawn at their death spot.");

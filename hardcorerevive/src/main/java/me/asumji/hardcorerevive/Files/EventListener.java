@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class EventListener implements Listener
 {
@@ -39,34 +40,38 @@ public class EventListener implements Listener
         ItemStack item = this.main.getConfig().getItemStack("revive.ritual.price");
         if (e.getEntity().getType().equals(EntityType.DROPPED_ITEM)) {
             Item droppedItem = (Item) e.getEntity();
-            if (this.main.getConfig().get("revive.method") == "ritual" && droppedItem.getItemStack().getType().toString().equalsIgnoreCase(item.getType().toString())) {
+            //main.getLogger().info(String.valueOf(this.main.getConfig().get("revive.method").equals("ritual")));
+            //main.getLogger().info(String.valueOf(droppedItem.getItemStack().getType().toString().equalsIgnoreCase(item.getType().toString())));
+            if (this.main.getConfig().get("revive.method").equals("ritual") && droppedItem.getItemStack().getType().toString().equalsIgnoreCase(item.getType().toString())) {
                 e.getEntity().remove();
                 if (e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
                     if (!this.main.getConfig().getBoolean("revive.ritual.ritualname")) {
-                        for (final Player p : Bukkit.getOnlinePlayers()) {
-                            if (p.getGameMode() == GameMode.SPECTATOR) {
-                                if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("spawn")) {
-                                    final String world = p.getLocation().getWorld().getName();
-                                    final Location location = this.main.getServer().getWorld(world).getSpawnLocation();
-                                    p.teleport(location);
-                                } else if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("death")) {
-                                    final ConfigurationSection section = this.main.getConfig().getConfigurationSection(p.getUniqueId().toString());
-                                    if (section.getString("cause").equalsIgnoreCase("nonReviviable")) {
-                                        final String world2 = p.getLocation().getWorld().getName();
-                                        final Location location2 = this.main.getServer().getWorld(world2).getSpawnLocation();
-                                        p.teleport(location2);
-                                    } else {
-                                        p.teleport(new Location(p.getLocation().getWorld(), section.getDouble("location.x"), section.getDouble("location.y"), section.getDouble("location.z")));
+                        if (droppedItem.getItemStack().equals(this.main.getConfig().getItemStack("revive.ritual.price"))) {
+                            for (final Player p : Bukkit.getOnlinePlayers()) {
+                                if (p.getGameMode() == GameMode.SPECTATOR) {
+                                    if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("spawn")) {
+                                        final String world = p.getLocation().getWorld().getName();
+                                        final Location location = this.main.getServer().getWorld(world).getSpawnLocation();
+                                        p.teleport(location);
+                                    } else if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("death")) {
+                                        final ConfigurationSection section = this.main.getConfig().getConfigurationSection(p.getUniqueId().toString());
+                                        if (section.getString("cause").equalsIgnoreCase("nonReviviable")) {
+                                            final String world2 = p.getLocation().getWorld().getName();
+                                            final Location location2 = this.main.getServer().getWorld(world2).getSpawnLocation();
+                                            p.teleport(location2);
+                                        } else {
+                                            p.teleport(new Location(p.getLocation().getWorld(), section.getDouble("location.x"), section.getDouble("location.y"), section.getDouble("location.z")));
+                                        }
                                     }
+                                    p.setGameMode(GameMode.SURVIVAL);
+                                    p.sendMessage(ChatColor.GREEN + "You've been revived!");
+                                    Bukkit.getServer().broadcastMessage(ChatColor.GREEN + p.getName() + " has been revived through a ritual!");
+                                    break;
                                 }
-                                p.setGameMode(GameMode.SURVIVAL);
-                                p.sendMessage(ChatColor.GREEN + "You've been revived!");
-                                Bukkit.getServer().broadcastMessage(ChatColor.GREEN + p.getName() + " has been revived through a ritual!");
-                                break;
                             }
                         }
                     } else {
-                        if (playerDead(droppedItem.getItemStack().getItemMeta().getDisplayName())) {
+                        if (playerDead(droppedItem.getItemStack().getItemMeta().getDisplayName()) && droppedItem.getItemStack().getItemMeta().getDisplayName() != "") {
                             Player p = this.main.getServer().getPlayer(droppedItem.getItemStack().getItemMeta().getDisplayName());
                             if (((String) this.main.getConfig().get("revive.spawn")).equalsIgnoreCase("spawn")) {
                                 final String world = p.getLocation().getWorld().getName();
