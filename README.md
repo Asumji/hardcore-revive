@@ -1,3 +1,10 @@
+How to Install
+
+1. Download from [Spigot](https://www.spigotmc.org/resources/hardcore-revive.90274/)
+2. Open your server's plugins folder.
+3. Drag the jar into that folder.
+4. Start/Restart your server.
+
 
 It's just a little plugin I coded for coding practice.
 
